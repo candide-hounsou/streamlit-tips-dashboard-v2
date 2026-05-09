@@ -72,8 +72,8 @@ col1.metric("Total Records", summary["n_rows"])
 col2.metric("Columns", summary["n_cols"])
 col3.metric("Records after filters", len(df))
 st.subheader("Raw Data Preview")
-st.dataframe(df, use_container_width=True)
-with st.expander("Column types & missing values"):
+st.dataframe(df, width='stretch')
+with st.expander("Column types & missing values"): 
     col_a, col_b = st.columns(2)
     col_a.write("**Data types**"); col_a.json(summary["dtypes"])
     col_b.write("**Missing values**"); col_b.json(summary["missing_values"])
@@ -81,7 +81,7 @@ st.divider()
 
 # SECTION 2 — Statistics
 st.header("🔍 Filtered Data — Basic Statistics")
-st.dataframe(df.describe(), use_container_width=True)
+st.dataframe(df.describe(), width='stretch')
 st.divider()
 
 # SECTION 3 — Visualizations
@@ -90,11 +90,11 @@ if df.empty:
     st.warning("No data matches the current filters.")
 else:
     r1c1, r1c2 = st.columns(2)
-    with r1c1: st.plotly_chart(plot_tip_distribution(df), use_container_width=True)
-    with r1c2: st.plotly_chart(plot_total_bill_vs_tip(df), use_container_width=True)
+    with r1c1: st.plotly_chart(plot_tip_distribution(df), width='stretch')
+    with r1c2: st.plotly_chart(plot_total_bill_vs_tip(df), width='stretch')
     r2c1, r2c2 = st.columns(2)
-    with r2c1: st.plotly_chart(plot_avg_tip_by_day(df), use_container_width=True)
-    with r2c2: st.plotly_chart(plot_tip_boxplot_by_time(df), use_container_width=True)
+    with r2c1: st.plotly_chart(plot_avg_tip_by_day(df), width='stretch')
+    with r2c2: st.plotly_chart(plot_tip_boxplot_by_time(df), width='stretch')
 st.divider()
 
 # SECTION 4 — Key Insights
@@ -145,7 +145,7 @@ with st.expander("ℹ️ Model metrics & feature importances", expanded=False):
         mc1.metric("MAE", f"${metrics_rf['mae']}"); mc2.metric("RMSE", f"${metrics_rf['rmse']}"); mc3.metric("R²", metrics_rf['r2'])
         fi = pd.DataFrame({"Feature": ALL_FEATURES, "Importance": m_rf.feature_importances_}).sort_values("Importance", ascending=True)
         fig_fi = px.bar(fi, x="Importance", y="Feature", orientation="h", title="Feature Importances", color="Importance", color_continuous_scale="Greens")
-        st.plotly_chart(fig_fi, use_container_width=True)
+        st.plotly_chart(fig_fi, width='stretch')
     except Exception as e:
         st.warning(f"Could not load metrics: {e}")
 inputs_rf = render_input_form("rf")

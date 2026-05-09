@@ -52,8 +52,10 @@ pip install -r requirements.txt
 
 ### 4. Launch the app
 ```bash
-streamlit run app.py
+python -m streamlit run app.py
 ```
+
+If the command is still unavailable, make sure your virtual environment is active and that `pip install -r requirements.txt` completed successfully.
 
 ---
 
