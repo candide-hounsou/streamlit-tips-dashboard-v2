@@ -1,6 +1,7 @@
 # 💰 Tips Dashboard — Streamlit App
 
 A data engineering project built with **Streamlit** that explores tipping patterns from the classic `tips` dataset.
+demo url = https://app-tips-dashboard-v2-rapplupkhcbwvnjxtigud3n.streamlit.app/.
 
 ---
 
