@@ -48,24 +48,38 @@ def build_feature_matrix(df: pd.DataFrame) -> tuple[np.ndarray, np.ndarray]:
 
 def prepare_data(df: pd.DataFrame, test_size: float = 0.2, random_state: int = 42):
     """
-    Full pipeline: encode → scale → split.
+    Full pipeline: split → encode → scale (on training data only).
     Returns (X_train, X_test, y_train, y_test, scaler, encoder).
+    
+    IMPORTANT: Scaler is fit on training data only to prevent data leakage.
     """
+    # First split the data
+    df_train, df_test = train_test_split(
+        df, test_size=test_size, random_state=random_state
+    )
+    
+    # Encode categorical features
     enc = OrdinalEncoder(
         categories=[CATEGORIES[c] for c in CATEGORICAL_FEATURES]
     )
-    cat_encoded = enc.fit_transform(df[CATEGORICAL_FEATURES])
-    num_array = df[NUMERIC_FEATURES].values
-
+    cat_encoded_train = enc.fit_transform(df_train[CATEGORICAL_FEATURES])
+    cat_encoded_test = enc.transform(df_test[CATEGORICAL_FEATURES])
+    
+    # Scale numeric features (fit on training data only)
+    num_array_train = df_train[NUMERIC_FEATURES].values
+    num_array_test = df_test[NUMERIC_FEATURES].values
+    
     scaler = StandardScaler()
-    num_scaled = scaler.fit_transform(num_array)
-
-    X = np.hstack([num_scaled, cat_encoded])
-    y = df[TARGET].values
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, random_state=random_state
-    )
+    num_scaled_train = scaler.fit_transform(num_array_train)
+    num_scaled_test = scaler.transform(num_array_test)
+    
+    # Combine features
+    X_train = np.hstack([num_scaled_train, cat_encoded_train])
+    X_test = np.hstack([num_scaled_test, cat_encoded_test])
+    
+    y_train = df_train[TARGET].values
+    y_test = df_test[TARGET].values
+    
     return X_train, X_test, y_train, y_test, scaler, enc
 
 
